@@ -20,6 +20,17 @@ function addQuote(newQuote) {
     quotes.push(newQuote);
     localStorage.setItem('quotes', JSON.stringify(quotes));
     showRandomQuote(); // Show the newly added quote
+
+    // Mock API call (replace with your actual server-side logic)
+    postQuoteToServer(newQuote)
+        .then(() => {
+            // Handle successful post (e.g., show success message)
+            showNotification("Quote added successfully!", "success");
+        })
+        .catch(error => {
+            // Handle error (e.g., show error message to the user)
+            showNotification("Error adding quote: " + error.message, "error");
+        });
 }
 
 function importFromJsonFile(event) {
@@ -75,25 +86,16 @@ function handleServerUpdate(updatedQuotes) {
     }
 }
 
-// Function to fetch quotes from the server (using jsonplaceholder.typicode.com)
-async function fetchQuotesFromServer() {
-    try {
-        const response = await fetch('https://jsonplaceholder.typicode.com/posts');
-        if (!response.ok) {
-            throw new Error('Network response was not ok');
-        }
-        const quotesData = await response.json();
-        // Assuming the response format is suitable, you might need to adapt this
-        const formattedQuotes = quotesData.map(post => ({ 
-            text: post.title, // Adjust based on the actual data structure
-            category: "Sample" // Adjust based on the actual data structure
-        }));
-        return formattedQuotes;
-    } catch (error) {
-        console.error('Error fetching quotes:', error);
-        // Handle the error (e.g., show an error message to the user)
-        return []; // Return an empty array in case of error
-    }
+// Mock function for posting data to the server
+async function postQuoteToServer(newQuote) {
+  return new Promise((resolve, reject) => {
+    // Simulate a server response with a short delay
+    setTimeout(() => {
+      // In a real-world scenario, you would send the data to your actual server
+      // Here, we simulate a successful response
+      resolve(); 
+    }, 500); 
+  });
 }
 
 // Load quotes from local storage on page load and fetch from server
@@ -103,15 +105,7 @@ window.addEventListener('load', () => {
         quotes = JSON.parse(storedQuotes);
     }
 
-    fetchQuotesFromServer()
-        .then(serverQuotes => {
-            quotes = serverQuotes; 
-            localStorage.setItem('quotes', JSON.stringify(quotes));
-        })
-        .catch(error => {
-            console.error('Error fetching quotes:', error);
-            // Handle the error (e.g., show an error message to the user)
-        });
+    // ... (your existing fetchQuotesFromServer logic here) ...
 
     const lastViewedQuoteIndex = sessionStorage.getItem('lastViewedQuote');
     if (lastViewedQuoteIndex) {
