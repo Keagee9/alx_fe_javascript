@@ -175,6 +175,22 @@ async function syncQuotes() {
   }
   
   
+async function syncQuotes() {
+    try {
+      const serverQuotes = await fetchQuotesFromServer(); 
+  
+      // ... (your conflict resolution logic) ...
+  
+      quotes = updatedQuotes;
+      localStorage.setItem('quotes', JSON.stringify(quotes));
+  
+      showNotification("Quotes synchronized successfully!", "success"); 
+  
+    } catch (error) {
+      console.error('Error syncing quotes:', error);
+      showNotification("Error syncing quotes: " + error.message, "error");
+    }
+  }
   
   // ... (rest of your existing code) ...
 async function postQuoteToServer(newQuote) {
