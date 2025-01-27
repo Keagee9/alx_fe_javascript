@@ -64,12 +64,38 @@ function handleServerUpdate(updatedQuotes) {
     }
 }
 
-// Load quotes from local storage on page load
+// Function to fetch quotes from the server
+async function fetchQuotesFromServer() {
+    try {
+        const response = await fetch('/api/quotes'); // Replace with the actual server endpoint
+        if (!response.ok) {
+            throw new Error('Network response was not ok');
+        }
+        const quotesData = await response.json();
+        return quotesData;
+    } catch (error) {
+        console.error('Error fetching quotes:', error);
+        // Handle the error (e.g., show an error message to the user)
+    }
+}
+
+// Load quotes from local storage on page load and fetch from server
 window.addEventListener('load', () => {
     const storedQuotes = localStorage.getItem('quotes');
     if (storedQuotes) {
         quotes = JSON.parse(storedQuotes);
     }
+
+    fetchQuotesFromServer()
+        .then(serverQuotes => {
+            quotes = serverQuotes; 
+            localStorage.setItem('quotes', JSON.stringify(quotes));
+        })
+        .catch(error => {
+            console.error('Error fetching quotes:', error);
+            // Handle the error (e.g., show an error message to the user)
+        });
+
     const lastViewedQuoteIndex = sessionStorage.getItem('lastViewedQuote');
     if (lastViewedQuoteIndex) {
         showQuote(lastViewedQuoteIndex); // Implement this function if needed
@@ -83,4 +109,43 @@ window.addEventListener('load', () => {
 
 // Add event listener to the buttons
 addQuoteButton.addEventListener('click', () => {
-    // Handle adding a new quote (prompt
+    createAddQuoteForm(); // Call the function to create the form
+});
+
+function createAddQuoteForm() {
+    const formContainer = document.createElement('div');
+    formContainer.innerHTML = `
+        <input id="newQuoteText" type="text" placeholder="Enter new quote">
+        <input id="newQuoteCategory" type="text" placeholder="Enter quote category">
+        <button onclick="addQuote()">Add Quote</button>
+    `;
+    document.body.appendChild(formContainer);
+}
+
+// ... rest of the code ...
+
+function supportsBlob() {
+    return typeof Blob !== 'undefined';
+}
+
+function createObjectURL(data) {
+    if (supportsBlob()) {
+        return URL.createObjectURL(new Blob([data], { type: 'application/json' }));
+    } else {
+        // Fallback for older environments (e.g., convert to a data URI)
+        return 'data:application/json;base64,' + btoa(JSON.stringify(data));
+    }
+}
+
+function exportToJsonFile() {
+    const data = JSON.stringify(quotes);
+    const url = createObjectURL(data);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = 'quotes.json';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+}
+
+exportQuotesButton.addEventListener('click', exportToJsonFile);
