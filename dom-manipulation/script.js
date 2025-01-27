@@ -191,6 +191,21 @@ async function syncQuotes() {
       showNotification("Error syncing quotes: " + error.message, "error");
     }
   }
+  // ... (your existing code) ...
+
+function showNotification(message, type) {
+    const notificationBar = document.getElementById('notificationBar'); 
+    notificationBar.textContent = message;
+    notificationBar.classList.add(type); // Add a class for styling (e.g., 'success', 'error')
+  
+    // Optionally, clear the notification after a few seconds
+    setTimeout(() => {
+      notificationBar.textContent = '';
+      notificationBar.classList.remove(type);
+    }, 3000); // Clear after 3 seconds
+  }
+  
+  // ... (rest of your code) ...
   
   // ... (rest of your existing code) ...
 async function postQuoteToServer(newQuote) {
