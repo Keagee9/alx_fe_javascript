@@ -87,6 +87,30 @@ function handleServerUpdate(updatedQuotes) {
 }
 
 // Mock function for posting data to the server
+// ... (rest of your existing code) ...
+
+async function fetchQuotesFromServer() {
+    try {
+      const response = await fetch('https://jsonplaceholder.typicode.com/posts');
+      if (!response.ok) {
+        throw new Error('Network response was not ok');
+      }
+      const quotesData = await response.json(); 
+  
+      // Assuming the response format is suitable, you might need to adapt this
+      const formattedQuotes = quotesData.map(post => ({ 
+        text: post.title, // Adjust based on the actual data structure
+        category: "Sample" // Adjust based on the actual data structure
+      }));
+      return formattedQuotes;
+    } catch (error) {
+      console.error('Error fetching quotes:', error);
+      // Handle the error (e.g., show an error message to the user)
+      return []; // Return an empty array in case of error
+    }
+  }
+  
+  // ... (rest of your existing code) ...
 async function postQuoteToServer(newQuote) {
   return new Promise((resolve, reject) => {
     // Simulate a server response with a short delay
