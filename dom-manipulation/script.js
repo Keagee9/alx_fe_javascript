@@ -134,6 +134,31 @@ async function postQuoteToServer(newQuote) {
       // Handle the error (e.g., show error message to the user)
     }
   }
+
+  // ... your existing code ...
+
+async function syncQuotes() {
+    try {
+      const serverQuotes = await fetchQuotesFromServer(); 
+  
+      // Implement the resolveConflicts function here
+      const updatedQuotes = resolveConflicts(serverQuotes, quotes); 
+  
+      quotes = updatedQuotes;
+      localStorage.setItem('quotes', JSON.stringify(quotes));
+  
+      showNotification("Quotes synchronized successfully!", "success");
+  
+    } catch (error) {
+      console.error('Error syncing quotes:', error);
+      showNotification("Error syncing quotes: " + error.message, "error");
+    }
+  }
+  
+  // Set the interval for checking for new quotes
+  setInterval(syncQuotes, 5 * 60 * 1000); // 5 minutes in milliseconds
+  
+  // ... rest of your existing code ...
   
   function addQuote(newQuote) {
     quotes.push(newQuote);
