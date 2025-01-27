@@ -193,10 +193,14 @@ async function syncQuotes() {
   }
   // ... (your existing code) ...
 
-function showNotification(message, type) {
-    const notificationBar = document.getElementById('notificationBar'); 
+  function showNotification(message, type) {
+    if (message === "Quotes synced with server!") {
+      // Handle specific styling or actions for this message (optional)
+      notificationBar.style.backgroundColor = "lightgreen"; 
+    }
+  
     notificationBar.textContent = message;
-    notificationBar.classList.add(type); // Add a class for styling (e.g., 'success', 'error')
+    notificationBar.classList.add(type); 
   
     // Optionally, clear the notification after a few seconds
     setTimeout(() => {
@@ -204,8 +208,6 @@ function showNotification(message, type) {
       notificationBar.classList.remove(type);
     }, 3000); // Clear after 3 seconds
   }
-  
-  // ... (rest of your code) ...
   
   // ... (rest of your existing code) ...
 async function postQuoteToServer(newQuote) {
