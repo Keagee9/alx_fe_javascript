@@ -109,6 +109,47 @@ async function fetchQuotesFromServer() {
       return []; // Return an empty array in case of error
     }
   }
+
+  // ... your existing code ...
+
+async function postQuoteToServer(newQuote) {
+    try {
+      const response = await fetch('/api/quotes', { // Replace with your actual server endpoint
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(newQuote) 
+      });
+  
+      if (!response.ok) {
+        throw new Error('Network response was not ok');
+      }
+  
+      // Handle successful response (e.g., show success message)
+      console.log('Quote posted successfully!'); 
+  
+    } catch (error) {
+      console.error('Error posting quote:', error);
+      // Handle the error (e.g., show error message to the user)
+    }
+  }
+  
+  function addQuote(newQuote) {
+    quotes.push(newQuote);
+    localStorage.setItem('quotes', JSON.stringify(quotes));
+    showRandomQuote(); // Show the newly added quote
+  
+    postQuoteToServer(newQuote)
+      .then(() => {
+        // Handle successful post (e.g., show success message)
+      })
+      .catch(error => {
+        // Handle error (e.g., show error message to the user)
+      });
+  }
+  
+  
   
   // ... (rest of your existing code) ...
 async function postQuoteToServer(newQuote) {
