@@ -22,6 +22,17 @@ function addQuote(newQuote) {
     showRandomQuote(); // Show the newly added quote
 }
 
+function importFromJsonFile(event) {
+    const fileReader = new FileReader();
+    fileReader.onload = function(event) {
+      const importedQuotes = JSON.parse(event.target.result);
+      quotes.push(...importedQuotes);
+      saveQuotes();
+      alert('Quotes imported successfully!');
+    };
+    fileReader.readAsText(event.target.files[0]);
+  }
+
 function populateCategories() {
     const categories = new Set();
     quotes.forEach(quote => categories.add(quote.category));
@@ -64,18 +75,24 @@ function handleServerUpdate(updatedQuotes) {
     }
 }
 
-// Function to fetch quotes from the server
+// Function to fetch quotes from the server (using jsonplaceholder.typicode.com)
 async function fetchQuotesFromServer() {
     try {
-        const response = await fetch('/api/quotes'); // Replace with the actual server endpoint
+        const response = await fetch('https://jsonplaceholder.typicode.com/posts');
         if (!response.ok) {
             throw new Error('Network response was not ok');
         }
         const quotesData = await response.json();
-        return quotesData;
+        // Assuming the response format is suitable, you might need to adapt this
+        const formattedQuotes = quotesData.map(post => ({ 
+            text: post.title, // Adjust based on the actual data structure
+            category: "Sample" // Adjust based on the actual data structure
+        }));
+        return formattedQuotes;
     } catch (error) {
         console.error('Error fetching quotes:', error);
         // Handle the error (e.g., show an error message to the user)
+        return []; // Return an empty array in case of error
     }
 }
 
